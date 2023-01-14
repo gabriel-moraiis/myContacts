@@ -14,7 +14,7 @@ import CategoriesService from '../../services/CategoriesService';
 import formatPhone from '../../Utils/formatPhone';
 
 
-export default function ContactForm({ buttonLabel }) {
+export default function ContactForm({ buttonLabel, onSubmit }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -24,13 +24,6 @@ export default function ContactForm({ buttonLabel }) {
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
   const isFormValid = (name && errors.length === 0);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log({
-      name, email, phone: formatPhone(phone), categoryId
-    });
-  };
 
   useEffect(() => {
     async function loadCategories(){
@@ -46,6 +39,14 @@ export default function ContactForm({ buttonLabel }) {
     0;
     loadCategories();
   }, []);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    onSubmit({
+      name, email, phone, categoryId
+    });
+  };
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -137,5 +138,6 @@ export default function ContactForm({ buttonLabel }) {
 }
 
 ContactForm.propTypes = {
-  buttonLabel: PropTypes.string.isRequired
+  buttonLabel: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired
 };
